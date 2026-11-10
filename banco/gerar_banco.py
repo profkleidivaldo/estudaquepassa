@@ -1,0 +1,312 @@
+#!/usr/bin/env python3
+"""Gera o banco de questões de EXEMPLO (autoral) em dois formatos:
+  - banco/banco-exemplo.csv  -> para importar na aba "Questoes" da planilha
+  - docs/demo.json           -> usado pelo site no modo demonstração
+
+Edite/adicione questões aqui, ou simplesmente cole as suas direto na planilha.
+Uso:  python3 banco/gerar_banco.py
+"""
+import csv
+import json
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent.parent
+FONTE = "Questão autoral de exemplo (não é de prova real)"
+
+HEADERS = ["id", "area", "tema", "banca", "orgao", "ano", "enunciado",
+           "A", "B", "C", "D", "E", "gabarito", "comentario", "dificuldade", "fonte"]
+
+QUESTOES = []
+
+
+def q(area, tema, dif, enunciado, opcoes, gab, comentario):
+    n = len(QUESTOES) + 1
+    QUESTOES.append({
+        "id": "EX%03d" % n, "area": area, "tema": tema, "banca": "", "orgao": "", "ano": "",
+        "enunciado": enunciado, "opcoes": opcoes, "gabarito": gab,
+        "comentario": comentario, "dificuldade": dif, "fonte": FONTE,
+    })
+
+
+# ----------------------------------------------------------------- EDUCAÇÃO
+q("Educação", "LDB", "facil",
+  "Segundo a LDB (Lei nº 9.394/1996), a educação básica é obrigatória e gratuita dos:",
+  ["5 aos 17 anos de idade.", "6 aos 14 anos de idade.", "4 aos 17 anos de idade.",
+   "6 aos 17 anos de idade.", "0 aos 17 anos de idade."], "C",
+  "Art. 4º, I (redação da Lei nº 12.796/2013): obrigatória e gratuita dos 4 aos 17 anos, "
+  "organizada em pré-escola, ensino fundamental e ensino médio.")
+
+q("Educação", "LDB", "medio",
+  "De acordo com a LDB, constitui princípio da gestão democrática do ensino público na educação básica:",
+  ["a escolha dos diretores exclusivamente pelo órgão central do sistema de ensino.",
+   "a elaboração do projeto pedagógico exclusivamente pela equipe gestora.",
+   "a centralização das decisões financeiras na secretaria de educação.",
+   "a participação das comunidades escolar e local em conselhos escolares ou equivalentes.",
+   "a dispensa de órgãos colegiados nas unidades escolares."], "D",
+  "Art. 14: os sistemas definem as normas de gestão democrática conforme os princípios de participação "
+  "dos profissionais da educação na elaboração do projeto pedagógico e de participação das comunidades "
+  "escolar e local em conselhos escolares ou equivalentes.")
+
+q("Educação", "LDB", "dificil",
+  "Segundo o art. 24 da LDB, a carga horária mínima anual do ensino fundamental é de:",
+  ["600 horas, distribuídas por um mínimo de 180 dias de trabalho escolar.",
+   "720 horas, distribuídas por um mínimo de 200 dias de trabalho escolar.",
+   "800 horas, distribuídas por um mínimo de 200 dias de trabalho escolar.",
+   "800 horas, distribuídas por um mínimo de 180 dias de trabalho escolar.",
+   "1.000 horas, distribuídas por um mínimo de 200 dias de trabalho escolar."], "C",
+  "Art. 24, I: carga horária mínima anual de oitocentas horas, distribuída por um mínimo de duzentos dias "
+  "de efetivo trabalho escolar, excluído o tempo reservado aos exames finais.")
+
+q("Educação", "Teorias da aprendizagem", "medio",
+  "Na teoria sociointeracionista de Vygotsky, a zona de desenvolvimento proximal corresponde:",
+  ["ao conjunto de conteúdos que o aluno já domina e que dispensam mediação.",
+   "à distância entre o que o aluno realiza sozinho e o que consegue realizar com a mediação de alguém mais experiente.",
+   "ao estágio do desenvolvimento em que a criança passa a pensar de modo abstrato e hipotético.",
+   "ao período crítico após o qual a aprendizagem deixa de ocorrer.",
+   "ao nível máximo de maturação biológica alcançado na adolescência."], "B",
+  "A ZDP é a distância entre o nível de desenvolvimento real (o que a criança faz sozinha) e o nível de "
+  "desenvolvimento potencial (o que faz com ajuda). O bom ensino atua nessa zona.")
+
+q("Educação", "Teorias da aprendizagem", "medio",
+  "Uma criança de 9 anos entende que a quantidade de água não muda ao ser transferida de um copo largo "
+  "para um copo estreito, mas ainda encontra dificuldade em raciocínios puramente hipotéticos. "
+  "Segundo Piaget, ela se encontra no estágio:",
+  ["sensório-motor.", "pré-operatório.", "operatório-concreto.", "operatório-formal.",
+   "simbólico-egocêntrico."], "C",
+  "Conservação de quantidades e reversibilidade surgem no estágio operatório-concreto (cerca de 7 a 11-12 "
+  "anos). O raciocínio hipotético-dedutivo é típico do operatório-formal.")
+
+q("Educação", "Teorias da aprendizagem", "dificil",
+  "Para Ausubel, a aprendizagem significativa ocorre quando:",
+  ["o aluno memoriza o conteúdo por repetição até reproduzi-lo sem erros.",
+   "o professor reforça as respostas corretas com recompensas imediatas.",
+   "o aluno descobre o conteúdo sozinho, sem qualquer organização prévia.",
+   "o conteúdo é apresentado do mais complexo ao mais simples, sem ligação com o que o aluno sabe.",
+   "a nova informação se relaciona de forma não arbitrária e substantiva a conhecimentos prévios relevantes da estrutura cognitiva do aluno."],
+  "E",
+  "A aprendizagem significativa depende dos subsunçores (conhecimentos prévios) e da disposição do aluno "
+  "para aprender. Contrasta com a aprendizagem mecânica, baseada em memorização literal.")
+
+q("Educação", "Avaliação", "facil",
+  "A avaliação que acontece ao longo do processo de ensino, fornecendo informações para que professor e "
+  "aluno ajustem o trabalho pedagógico, é denominada:",
+  ["formativa.", "classificatória.", "seletiva.", "pontual.", "somativa."], "A",
+  "A avaliação formativa acompanha o processo, regula a aprendizagem e orienta intervenções. A somativa "
+  "faz um balanço ao final de uma etapa.")
+
+q("Educação", "Avaliação", "medio",
+  "Na verificação do rendimento escolar, a LDB determina que deve prevalecer:",
+  ["os resultados de provas finais sobre os obtidos ao longo do período.",
+   "os aspectos quantitativos sobre os qualitativos.",
+   "o critério único de média aritmética das provas.",
+   "os aspectos qualitativos sobre os quantitativos e os resultados ao longo do período sobre os de eventuais provas finais.",
+   "as provas padronizadas externas como único instrumento."], "D",
+  "Art. 24, V, a: avaliação contínua e cumulativa, com prevalência dos aspectos qualitativos sobre os "
+  "quantitativos e dos resultados ao longo do período sobre os de eventuais provas finais.")
+
+q("Educação", "BNCC", "facil",
+  "A Base Nacional Comum Curricular (BNCC) define, para a educação básica, quantas competências gerais?",
+  ["5", "7", "8", "10", "12"], "D",
+  "A BNCC apresenta 10 competências gerais, que se articulam às aprendizagens essenciais de toda a "
+  "educação básica.")
+
+q("Educação", "BNCC", "medio",
+  "Na BNCC, a organização curricular da educação infantil se dá por meio de:",
+  ["componentes curriculares.", "áreas do conhecimento.", "campos de experiência.",
+   "itinerários formativos.", "eixos temáticos obrigatórios."], "C",
+  "São cinco campos de experiência: O eu, o outro e o nós; Corpo, gestos e movimentos; Traços, sons, "
+  "cores e formas; Escuta, fala, pensamento e imaginação; Espaços, tempos, quantidades, relações e "
+  "transformações.")
+
+q("Educação", "Educação inclusiva", "medio",
+  "Segundo a LDB, a educação especial é modalidade de educação escolar oferecida:",
+  ["exclusivamente em escolas especializadas.",
+   "preferencialmente na rede regular de ensino, para educandos com deficiência, transtornos globais do desenvolvimento e altas habilidades ou superdotação.",
+   "apenas na educação infantil.",
+   "somente em classes hospitalares.",
+   "a critério das famílias, fora do sistema de ensino."], "B",
+  "Art. 58: modalidade oferecida preferencialmente na rede regular de ensino. A perspectiva é inclusiva: "
+  "a educação especial é transversal a todos os níveis, etapas e modalidades.")
+
+q("Educação", "Educação inclusiva", "dificil",
+  "O Atendimento Educacional Especializado (AEE), na perspectiva da educação inclusiva, tem a função de:",
+  ["complementar ou suplementar a formação do aluno, com recursos de acessibilidade e estratégias que eliminem barreiras à sua participação.",
+   "substituir a escolarização no ensino comum.",
+   "reunir alunos com deficiência em turmas separadas.",
+   "realizar reforço escolar dos conteúdos do currículo comum.",
+   "avaliar o aluno para decidir sua permanência na escola regular."], "A",
+  "Decreto nº 7.611/2011: o AEE é complementar (para alunos com deficiência e TGD) ou suplementar (para "
+  "altas habilidades), nunca substitutivo da escolarização no ensino comum.")
+
+# ------------------------------------------------------------ ADMINISTRAÇÃO
+q("Administração", "Processo administrativo", "facil",
+  "Entre as funções do processo administrativo, aquela que consiste em comparar o desempenho real com o "
+  "planejado e adotar ações corretivas é:",
+  ["planejamento.", "organização.", "direção.", "controle.", "liderança."], "D",
+  "Controle: monitorar resultados, compará-los com os padrões definidos no planejamento e corrigir "
+  "desvios.")
+
+q("Administração", "Planejamento", "medio",
+  "O planejamento que desdobra os objetivos estratégicos em planos específicos para cada área ou "
+  "departamento, em prazo intermediário, é o:",
+  ["estratégico.", "tático.", "operacional.", "contingencial.", "normativo."], "B",
+  "Estratégico: longo prazo, organização como um todo. Tático: médio prazo, por departamento. "
+  "Operacional: curto prazo, tarefas e rotinas.")
+
+q("Administração", "Liderança", "medio",
+  "Na teoria da liderança situacional, de Hersey e Blanchard, o estilo de liderança mais adequado depende:",
+  ["dos traços de personalidade inatos do líder.",
+   "da posição hierárquica ocupada pelo líder.",
+   "exclusivamente do tamanho da organização.",
+   "do tempo de casa do liderado.",
+   "do nível de maturidade (prontidão) dos liderados para a tarefa."], "E",
+  "Não existe estilo único ideal: o líder ajusta o grau de direção e de apoio conforme a prontidão dos "
+  "liderados para a tarefa específica.")
+
+q("Administração", "Gestão escolar", "medio",
+  "Na perspectiva da gestão democrática, o projeto político-pedagógico (PPP) da escola deve ser:",
+  ["construído coletivamente, com participação da comunidade escolar, e revisto periodicamente.",
+   "elaborado pela secretaria de educação e enviado às escolas.",
+   "um documento burocrático produzido apenas para cumprir exigência legal.",
+   "definido pelo diretor com apoio exclusivo da coordenação.",
+   "idêntico em todas as escolas de uma mesma rede."], "A",
+  "O PPP expressa a identidade e a intencionalidade da escola. A LDB (arts. 12 e 13) atribui à escola "
+  "elaborar sua proposta pedagógica, com participação dos docentes; a gestão democrática amplia essa "
+  "participação à comunidade.")
+
+q("Administração", "Gestão escolar", "dificil",
+  "Entre as atribuições típicas do conselho escolar em uma gestão democrática, inclui-se:",
+  ["substituir o diretor nas decisões cotidianas da escola.",
+   "contratar e demitir professores da rede.",
+   "deliberar e acompanhar, de forma colegiada, a execução do PPP e a aplicação dos recursos da escola.",
+   "definir o calendário letivo nacional.",
+   "elaborar as diretrizes curriculares nacionais."], "C",
+  "O conselho escolar é órgão colegiado com funções deliberativa, consultiva, fiscalizadora e "
+  "mobilizadora. Não substitui a direção nem assume competências do sistema de ensino.")
+
+q("Administração", "Gestão de pessoas", "facil",
+  "Na hierarquia das necessidades de Maslow, a necessidade de autorrealização encontra-se:",
+  ["na base da pirâmide.", "logo acima das necessidades fisiológicas.",
+   "no topo da pirâmide.", "entre as necessidades de segurança e as sociais.",
+   "fora da pirâmide."], "C",
+  "Na pirâmide clássica: fisiológicas, segurança, sociais, estima e, no topo, autorrealização.")
+
+# ------------------------------------------------------------------- DIREITO
+q("Direito", "Direito Constitucional", "facil",
+  "Segundo o art. 205 da Constituição Federal, a educação visa:",
+  ["ao pleno desenvolvimento da pessoa, ao seu preparo para o exercício da cidadania e à sua qualificação para o trabalho.",
+   "ao desenvolvimento econômico regional e à formação de mão de obra.",
+   "ao cumprimento exclusivo de metas de alfabetização.",
+   "ao ensino religioso e à formação cívica.",
+   "ao acesso exclusivo ao ensino superior."], "A",
+  "Art. 205: a educação, direito de todos e dever do Estado e da família, será promovida e incentivada "
+  "com a colaboração da sociedade, visando a essas três finalidades.")
+
+q("Direito", "Direito Constitucional", "medio",
+  "Nos termos do art. 212 da CF, a União aplicará anualmente, na manutenção e desenvolvimento do ensino, "
+  "no mínimo, que percentual da receita resultante de impostos? E os Estados, o DF e os Municípios?",
+  ["10% e 20%, respectivamente.", "18% e 25%, respectivamente.", "20% e 30%, respectivamente.",
+   "25% e 18%, respectivamente.", "15% e 25%, respectivamente."], "B",
+  "Art. 212, caput: a União nunca menos de 18%; Estados, DF e Municípios, 25%, no mínimo, da receita "
+  "de impostos, compreendida a proveniente de transferências.")
+
+q("Direito", "Direito Constitucional", "dificil",
+  "Constitui princípio com base no qual o ensino será ministrado, previsto no art. 206 da CF:",
+  ["gratuidade do ensino em todos os estabelecimentos, inclusive os privados.",
+   "unicidade de concepção pedagógica.",
+   "seleção de alunos exclusivamente por mérito.",
+   "gestão democrática do ensino público, na forma da lei.",
+   "ensino religioso obrigatório para todos."], "D",
+  "A gratuidade prevista no art. 206, IV, é do ensino público em estabelecimentos oficiais. A CF "
+  "garante o pluralismo de ideias e de concepções pedagógicas, não a unicidade. O ensino religioso "
+  "é de matrícula facultativa (art. 210, §1º).")
+
+q("Direito", "ECA", "facil",
+  "Para os efeitos do Estatuto da Criança e do Adolescente (Lei nº 8.069/1990), considera-se criança a "
+  "pessoa de até:",
+  ["10 anos completos.", "12 anos incompletos.", "14 anos completos.", "16 anos completos.",
+   "18 anos incompletos."], "B",
+  "Art. 2º: criança é a pessoa até 12 anos de idade incompletos; adolescente, aquela entre 12 e 18 anos "
+  "de idade.")
+
+q("Direito", "ECA", "medio",
+  "Segundo o ECA, entre os direitos assegurados à criança e ao adolescente no âmbito da educação está:",
+  ["a escolha do currículo pela própria criança.",
+   "a dispensa de frequência após cinco faltas.",
+   "a matrícula obrigatória em escola privada.",
+   "a proibição de organização em entidades estudantis.",
+   "o direito de contestar critérios avaliativos, podendo recorrer às instâncias escolares superiores."], "E",
+  "Art. 53: igualdade de condições para acesso e permanência, direito de ser respeitado pelos "
+  "educadores, de contestar critérios avaliativos, de organização e participação em entidades "
+  "estudantis e acesso a escola pública e gratuita próxima de sua residência.")
+
+q("Direito", "Direito Administrativo", "facil",
+  "São princípios expressos no caput do art. 37 da Constituição Federal, EXCETO:",
+  ["legalidade.", "impessoalidade.", "moralidade.", "razoabilidade.", "eficiência."], "D",
+  "Os cinco princípios expressos (LIMPE) são legalidade, impessoalidade, moralidade, publicidade e "
+  "eficiência. A razoabilidade é princípio implícito, também previsto na Lei nº 9.784/1999.")
+
+q("Direito", "Direito Administrativo", "medio",
+  "Segundo a Lei nº 14.133/2021 (Nova Lei de Licitações), NÃO é modalidade de licitação:",
+  ["tomada de preços.", "pregão.", "concorrência.", "concurso.", "diálogo competitivo."], "A",
+  "Art. 28: pregão, concorrência, concurso, leilão e diálogo competitivo. Tomada de preços e convite "
+  "foram extintos pela nova lei.")
+
+q("Direito", "Direito Administrativo", "dificil",
+  "O atributo do ato administrativo que permite à Administração executar suas decisões diretamente, sem "
+  "necessidade de prévia autorização do Poder Judiciário, é a:",
+  ["presunção de legitimidade.", "imperatividade.", "autoexecutoriedade.", "tipicidade.",
+   "motivação."], "C",
+  "A autoexecutoriedade só existe quando a lei a prevê ou em situações de urgência. A imperatividade "
+  "impõe obrigações a terceiros independentemente de sua concordância.")
+
+q("Direito", "Direito Educacional", "medio",
+  "Segundo o art. 13 da LDB, incumbe aos docentes, entre outras atribuições:",
+  ["fixar o calendário letivo nacional.", "nomear os dirigentes das unidades escolares.",
+   "aprovar o orçamento da rede de ensino.", "regulamentar a carreira do magistério.",
+   "estabelecer estratégias de recuperação para os alunos de menor rendimento."], "E",
+  "Art. 13: participar da elaboração da proposta pedagógica, elaborar e cumprir plano de trabalho, zelar "
+  "pela aprendizagem dos alunos, estabelecer estratégias de recuperação, entre outras.")
+
+q("Direito", "Direito Educacional", "dificil",
+  "A Lei do Piso (Lei nº 11.738/2008) estabelece que, na composição da jornada de trabalho do professor, "
+  "o limite máximo para atividades de interação com os educandos é de:",
+  ["1/3 da carga horária.", "2/3 da carga horária.", "1/2 da carga horária.",
+   "3/4 da carga horária.", "4/5 da carga horária."], "B",
+  "Art. 2º, §4º: no máximo 2/3 da carga horária para interação com os educandos, reservando-se o "
+  "restante a atividades extraclasse. O STF validou a regra na ADI 4167.")
+
+
+def main():
+    (BASE / "banco").mkdir(exist_ok=True)
+    (BASE / "docs").mkdir(exist_ok=True)
+
+    with open(BASE / "banco" / "banco-exemplo.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(HEADERS)
+        for x in QUESTOES:
+            op = dict(zip("ABCDE", x["opcoes"]))
+            w.writerow([x["id"], x["area"], x["tema"], x["banca"], x["orgao"], x["ano"],
+                        x["enunciado"], op.get("A", ""), op.get("B", ""), op.get("C", ""),
+                        op.get("D", ""), op.get("E", ""), x["gabarito"], x["comentario"],
+                        x["dificuldade"], x["fonte"]])
+
+    demo = []
+    for x in QUESTOES:
+        demo.append({
+            "id": x["id"], "area": x["area"], "tema": x["tema"], "banca": x["banca"],
+            "orgao": x["orgao"], "ano": x["ano"], "enunciado": x["enunciado"],
+            "opcoes": dict(zip("ABCDE", x["opcoes"])), "dificuldade": x["dificuldade"],
+            "gabarito": x["gabarito"], "comentario": x["comentario"],
+        })
+    with open(BASE / "docs" / "demo.json", "w", encoding="utf-8") as f:
+        json.dump({"questions": demo}, f, ensure_ascii=False, indent=1)
+
+    gab = {}
+    for x in QUESTOES:
+        gab[x["gabarito"]] = gab.get(x["gabarito"], 0) + 1
+    print("%d questões geradas. Distribuição do gabarito: %s" % (len(QUESTOES), dict(sorted(gab.items()))))
+
+
+if __name__ == "__main__":
+    main()
