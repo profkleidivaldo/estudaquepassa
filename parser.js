@@ -10,6 +10,7 @@
   var RE_NUM = /^\s*(\d{1,3})\s*[.)\-–]\s+(\S.*)$/;
   var RE_NUM_ESPACO = /^\s*(\d{1,3})\s+(?=[A-ZÀ-Ú(“"'])(\S.*)$/;
   var RE_ALT = /^\s*(?:\(([A-Ea-e])\)|([A-Ea-e])\s*[).]|([A-Ea-e])\s+[-–])\s*(.*)$/;
+  var RE_ALT_BARE = /^\s*([A-E])\s+(\S.*)$/;
   var RE_ITEM = /^\s*(?:[IVX]{1,4}\s*[-–.)]|\(\s*\)|[•·▪]\s|[-–]\s+\S)/;
   var RE_APOIO = /^\s*(?:TEXTO|Texto)\s*(?:\d+|[IVX]+|para|associado|base)\b/;
   var RE_RODAPE = /^\s*(?:p[áa]g(?:ina)?\.?\s*\d+(?:\s*(?:de|\/)\s*\d+)?|-+\s*\d+\s*-+)\s*$/i;
@@ -32,7 +33,7 @@
         if (!t) return false;
         if (RE_RODAPE.test(t)) return false;
         var k = t.toLowerCase().replace(/\d+/g, '#');
-        return !(cont[k] >= lim && paginas.length >= 3 && !RE_ALT.test(t) && !RE_QUESTAO.test(t) && !RE_NUM.test(t));
+        return !(cont[k] >= lim && paginas.length >= 3 && t.length >= 12 && !RE_ALT.test(t) && !RE_QUESTAO.test(t) && !RE_NUM.test(t));
       });
     }).reduce(function (a, b) { return a.concat(b); }, []);
   }
@@ -45,6 +46,20 @@
       var v = m[2].toUpperCase();
       lista.push({ n: parseInt(m[1], 10), letra: /^[A-E]$/.test(v) ? v : null });
       re.lastIndex = m.index + m[0].length - 1;
+    }
+    if (lista.length < 3) {
+      // tabela: linha de números seguida de linha de letras (Questão 1 2 3 ... / Gabarito A B C ...)
+      var ls = texto.split('\n');
+      for (var i = 0; i + 1 < ls.length; i++) {
+        var nums = ls[i].match(/\b\d{1,3}\b/g), lets = ls[i + 1].match(/(?:^|\s)([A-Ea-e*]|ANULAD[AO])(?=\s|$)/gi);
+        if (nums && lets && nums.length >= 3 && nums.length === lets.length) {
+          lista = nums.map(function (n, j) {
+            var v = lets[j].trim().toUpperCase();
+            return { n: parseInt(n, 10), letra: /^[A-E]$/.test(v) ? v : null };
+          });
+          break;
+        }
+      }
     }
     return lista;
   }
@@ -61,18 +76,33 @@
     return { corpo: linhas, gabarito: '' };
   }
 
+  /* Escolhe a melhor sequência de números de questão. Tolera lacunas (linha não reconhecida),
+     provas que começam em outro número (ex.: 31) e blocos que reiniciam em 1. */
   function selecionar(linhas, re, explicito) {
-    var aceitos = [], esperado = 1;
+    var c = [];
     linhas.forEach(function (l, i) {
       var m = re.exec(l);
       if (!m) return;
       var n = parseInt(m[1], 10);
-      if (n === esperado) { aceitos.push({ i: i, n: n, resto: m[2] || '' }); esperado++; }
-      else if (n === 1 && aceitos.length >= 5 && (explicito || esperado > 10)) {
-        aceitos.push({ i: i, n: 1, resto: m[2] || '' }); esperado = 2;
-      }
+      if (n < 1 || n > 300) return;
+      c.push({ i: i, n: n, resto: m[2] || '' });
     });
-    return aceitos;
+    if (!c.length) return [];
+    var best = [], prev = [], len = [];
+    for (var a = 0; a < c.length; a++) {
+      len[a] = 1; prev[a] = -1;
+      for (var b = 0; b < a; b++) {
+        var d = c[a].n - c[b].n;
+        var segue = d >= 1 && d <= 3;
+        var reinicio = c[a].n === 1 && len[b] >= 5 && (explicito || c[b].n > 10);
+        if ((segue || reinicio) && len[b] + 1 - (d > 1 && !reinicio ? 0.5 : 0) > len[a]) { len[a] = len[b] + 1 - (d > 1 && !reinicio ? 0.5 : 0); prev[a] = b; }
+      }
+    }
+    var fim = 0;
+    for (var k = 1; k < c.length; k++) if (len[k] > len[fim]) fim = k;
+    for (var p = fim; p >= 0; p = prev[p]) best.unshift(c[p]);
+    // sem apoio de sequência (só 1 ou 2 achados) não vale como lista de questões
+    return best;
   }
 
   function ehTitulo(l) {
@@ -97,11 +127,11 @@
     return out.trim();
   }
 
-  function extrairAlternativas(linhas) {
+  function cadeiaAlt(linhas, re, mapa) {
     var marcas = [];
     linhas.forEach(function (l, i) {
-      var m = RE_ALT.exec(l);
-      if (m) marcas.push({ i: i, L: (m[1] || m[2] || m[3]).toUpperCase(), txt: m[4] || '' });
+      var m = re.exec(l);
+      if (m) marcas.push(mapa(m, i));
     });
     var melhor = null;
     for (var a = marcas.length - 1; a >= 0; a--) {
@@ -111,6 +141,16 @@
         if (marcas[k].L === prox) { cadeia.push(marcas[k]); prox = String.fromCharCode(prox.charCodeAt(0) + 1); }
       }
       if (cadeia.length >= 2) { melhor = cadeia; if (cadeia.length >= 4) break; }
+    }
+    return melhor;
+  }
+
+  function extrairAlternativas(linhas) {
+    var melhor = cadeiaAlt(linhas, RE_ALT, function (m, i) { return { i: i, L: (m[1] || m[2] || m[3]).toUpperCase(), txt: m[4] || '' }; });
+    if (!melhor || melhor.length < 4) {
+      // FGV, FCC e outras: "A texto" sem parêntese nem ponto. Só vale se houver A-D em ordem.
+      var bare = cadeiaAlt(linhas, RE_ALT_BARE, function (m, i) { return { i: i, L: m[1], txt: m[2] || '' }; });
+      if (bare && bare.length >= 4 && (!melhor || bare.length > melhor.length)) melhor = bare;
     }
     if (!melhor) return null;
     var opcoes = {};
