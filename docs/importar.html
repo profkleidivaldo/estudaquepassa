@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Importar prova – Gabarito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="topo-in">
+      <a class="marca" href="./" aria-label="Gabarito, início">
+        <span class="marca-bolha" aria-hidden="true"></span>
+        <span class="marca-nome">Gabarito</span>
+      </a>
+      <nav class="abas" aria-label="Seções">
+        <a class="aba" href="./">Praticar</a>
+        <a class="aba" href="importar.html" aria-current="page">Importar prova</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="miolo imp" id="imp">
+    <h1 class="titulo-pagina">Importar prova em PDF</h1>
+    <p class="apoio">Abra o PDF, selecione com o mouse o texto de cada questão e monte a lista. O PDF é lido no seu navegador; nada é enviado até você clicar em Enviar.</p>
+
+    <p class="rascunho" id="rascunho" hidden>
+      <span id="rascunho-txt"></span>
+      <button type="button" class="btn-sec" id="btn-descartar">Descartar rascunho</button>
+    </p>
+
+    <section class="secao" aria-labelledby="h-arquivos">
+      <h2 id="h-arquivos">1. Abrir a prova</h2>
+      <div class="filtros">
+        <label class="campo">
+          <span>Prova (PDF com texto selecionável)</span>
+          <input type="file" id="f-prova" accept="application/pdf,.pdf">
+        </label>
+        <div class="linha-filtro">
+          <label class="campo"><span>Banca</span><input type="text" id="m-banca" maxlength="40"></label>
+          <label class="campo"><span>Órgão / cargo</span><input type="text" id="m-orgao" maxlength="80"></label>
+          <label class="campo"><span>Ano</span><input type="text" id="m-ano" maxlength="4" inputmode="numeric"></label>
+        </div>
+        <details class="gab-box">
+          <summary>Tentar separar tudo automaticamente (opcional)</summary>
+          <p class="apoio">Funciona bem em provas com "Questão 1" e alternativas A) a E). Se a prova tiver o gabarito em outro PDF, escolha-o aqui. O resultado cai na mesma lista de revisão e você pode completar o resto pelo visor.</p>
+          <label class="campo">
+            <span>Gabarito em PDF (opcional)</span>
+            <input type="file" id="f-gab" accept="application/pdf,.pdf">
+          </label>
+          <div class="acoes-q">
+            <button type="button" class="btn-sec" id="btn-ler" disabled>Separar automaticamente</button>
+            <span class="apoio" id="st-leitura" role="status" aria-live="polite"></span>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="secao" id="sec-visor" hidden aria-labelledby="h-visor">
+      <h2 id="h-visor">2. Selecionar as questões</h2>
+      <div class="visor-grid">
+        <div class="visor-col">
+          <div class="visor-barra">
+            <button type="button" class="btn-sec" id="pg-ant" aria-label="Página anterior">‹</button>

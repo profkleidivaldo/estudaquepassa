@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gabarito – treino para concursos de educação</title>
+  <meta name="description" content="Questões de concursos de pedagogia (educação, administração e direito), uma por vez, com correção imediata e sugestão da próxima atividade.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="topo-in">
+      <a class="marca" href="./" aria-label="Gabarito, início">
+        <span class="marca-bolha" aria-hidden="true"></span>
+        <span class="marca-nome">Gabarito</span>
+      </a>
+      <nav class="abas" aria-label="Seções">
+        <button type="button" class="aba" data-view="praticar" aria-current="page">Praticar</button>
+        <button type="button" class="aba" data-view="desempenho">Desempenho</button>
+      </nav>
+      <button type="button" class="btn-texto" id="btn-conta">Conta</button>
+    </div>
+  </header>
+
+  <main id="app" class="miolo" tabindex="-1">
+    <p class="carregando">Carregando questões…</p>
+  </main>
+
+  <dialog id="dlg-conta" aria-labelledby="dlg-titulo">
+    <form method="dialog" class="dlg-corpo" id="form-conta">
+      <h2 id="dlg-titulo">Sua conta</h2>
+      <p class="apoio">Não há senha. Seu histórico fica ligado a um código. Para continuar em outro aparelho, digite o mesmo código lá.</p>
+      <label class="campo">
+        <span>Seu nome (opcional)</span>
+        <input type="text" id="in-nome" maxlength="40" autocomplete="name">
+      </label>
+      <label class="campo">
+        <span>Código de acesso</span>
+        <input type="text" id="in-codigo" maxlength="40" autocomplete="off" spellcheck="false">
+      </label>
+      <p class="modo" id="txt-modo"></p>
+      <div class="dlg-acoes">
+        <button type="button" class="btn-perigo" id="btn-zerar">Apagar histórico deste aparelho</button>
+        <span class="espaco"></span>
+        <button type="button" class="btn-sec" id="btn-fechar">Cancelar</button>
+        <button type="submit" class="btn" value="salvar">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
