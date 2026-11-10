@@ -25,74 +25,43 @@
 
   <main class="miolo imp" id="imp">
     <h1 class="titulo-pagina">Importar prova em PDF</h1>
-    <p class="apoio">O PDF é lido aqui no seu navegador. As questões são separadas, classificadas por área e tema, e você revisa tudo antes de enviar ao banco.</p>
+    <p class="apoio">Abra o PDF, selecione com o mouse o texto de cada questão e monte a lista. O PDF é lido no seu navegador; nada é enviado até você clicar em Enviar.</p>
+
+    <p class="rascunho" id="rascunho" hidden>
+      <span id="rascunho-txt"></span>
+      <button type="button" class="btn-sec" id="btn-descartar">Descartar rascunho</button>
+    </p>
 
     <section class="secao" aria-labelledby="h-arquivos">
-      <h2 id="h-arquivos">Arquivos</h2>
+      <h2 id="h-arquivos">1. Abrir a prova</h2>
       <div class="filtros">
         <label class="campo">
           <span>Prova (PDF com texto selecionável)</span>
           <input type="file" id="f-prova" accept="application/pdf,.pdf">
-        </label>
-        <label class="campo">
-          <span>Gabarito em PDF (opcional, se estiver em arquivo separado)</span>
-          <input type="file" id="f-gab" accept="application/pdf,.pdf">
         </label>
         <div class="linha-filtro">
           <label class="campo"><span>Banca</span><input type="text" id="m-banca" maxlength="40"></label>
           <label class="campo"><span>Órgão / cargo</span><input type="text" id="m-orgao" maxlength="80"></label>
           <label class="campo"><span>Ano</span><input type="text" id="m-ano" maxlength="4" inputmode="numeric"></label>
         </div>
-        <div class="acoes-q">
-          <button type="button" class="btn" id="btn-ler" disabled>Ler e separar questões</button>
-          <span class="apoio" id="st-leitura" role="status" aria-live="polite"></span>
-        </div>
-      </div>
-    </section>
-
-    <section class="secao" id="sec-rev" hidden aria-labelledby="h-rev">
-      <h2 id="h-rev">Revisão</h2>
-      <p class="apoio" id="resumo-rev"></p>
-
-      <details class="gab-box">
-        <summary>Colar ou corrigir o gabarito</summary>
-        <label class="campo">
-          <span>Cole no formato 1-A 2-B 3-C… (aceita também 1 A, 1: A, 01) A)</span>
-          <textarea id="t-gab" rows="4" placeholder="1-A 2-C 3-B 4-D"></textarea>
-        </label>
-        <button type="button" class="btn-sec" id="btn-gab">Aplicar gabarito</button>
-      </details>
-
-      <div class="barra-rev">
-        <label class="chk"><input type="checkbox" id="so-revisar"> Mostrar só as que precisam de revisão</label>
-        <span class="espaco"></span>
-        <button type="button" class="btn-sec" id="btn-todas">Marcar todas as prontas</button>
-        <button type="button" class="btn-sec" id="btn-nenhuma">Desmarcar todas</button>
-      </div>
-
-      <ol class="cards" id="cards"></ol>
-
-      <div class="envio" id="envio">
-        <div class="envio-in">
-          <label class="campo chave" id="box-chave" hidden>
-            <span>Chave de administrador</span>
-            <input type="password" id="in-chave" autocomplete="off">
+        <details class="gab-box">
+          <summary>Tentar separar tudo automaticamente (opcional)</summary>
+          <p class="apoio">Funciona bem em provas com "Questão 1" e alternativas A) a E). Se a prova tiver o gabarito em outro PDF, escolha-o aqui. O resultado cai na mesma lista de revisão e você pode completar o resto pelo visor.</p>
+          <label class="campo">
+            <span>Gabarito em PDF (opcional)</span>
+            <input type="file" id="f-gab" accept="application/pdf,.pdf">
           </label>
-          <span class="espaco"></span>
-          <button type="button" class="btn-sec" id="btn-csv">Baixar CSV</button>
-          <button type="button" class="btn" id="btn-enviar" disabled>Enviar para o banco</button>
-        </div>
-        <p class="apoio" id="st-envio" role="status" aria-live="polite"></p>
+          <div class="acoes-q">
+            <button type="button" class="btn-sec" id="btn-ler" disabled>Separar automaticamente</button>
+            <span class="apoio" id="st-leitura" role="status" aria-live="polite"></span>
+          </div>
+        </details>
       </div>
     </section>
-  </main>
 
-  <datalist id="dl-temas"></datalist>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous"></script>
-  <script src="config.js"></script>
-  <script src="taxonomia.js"></script>
-  <script src="parser.js"></script>
-  <script src="importar.js"></script>
-</body>
-</html>
+    <section class="secao" id="sec-visor" hidden aria-labelledby="h-visor">
+      <h2 id="h-visor">2. Selecionar as questões</h2>
+      <div class="visor-grid">
+        <div class="visor-col">
+          <div class="visor-barra">
+            <button type="button" class="btn-sec" id="pg-ant" aria-label="Página anterior">‹</button>
